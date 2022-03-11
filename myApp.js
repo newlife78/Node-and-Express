@@ -1,14 +1,28 @@
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
-require("dotenv").config();
+require("dotenv").config(); //import and load the .env variables
 
 app.use("/public", express.static(__dirname + "/public"));
+
+app.use((req, res, next) => {
+  console.log(req.method + " " + req.path + " - " + req.ip);
+  next();
+});
+
+// app.get("/", (req, res) => {
+//   res.send("Hello Express");
+// });
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
+// app.get("/json", (req, res) => {
+//   res.json({ "message": "Hello json" });
+// });
+
+//Use the .env file
 app.get("/json", (req, res) => {
   res.json({
     message:
@@ -39,10 +53,12 @@ app.get("/name", (req, res) => {
 });
 
 //Get Data from POST Requests
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false })); //Body-parse to parse POST requests
 
 app.post("/name", (req, res) => {
   res.json({ name: req.body.first + " " + req.body.last });
 });
+
+console.log("Hello Node and Express!");
 
 module.exports = app;
